@@ -121,7 +121,7 @@ function findClosestW(currentData, currPos, currLineIndex) {
 }
 function findClosestNE(currentData, currPos, currLineIndex) {
     let currValue = ".";
-    for (n = currLineIndex - 1, m = currPos + 1; n !== 0 && m < currentData[currLineIndex].length; n--, m++) {
+    for (n = currLineIndex - 1, m = currPos + 1; n >= 0 && m < currentData[currLineIndex].length; n--, m++) {
         currValue = currentData[n].charAt(m);
         if (currValue !== ".") {
             break;
@@ -157,6 +157,6 @@ function findClosestSW(currentData, currPos, currLineIndex) {
             break;
         }
     }
-    return currValue;6
+    return currValue;
 }
 
