@@ -47,8 +47,8 @@ Code for https://adventofcode.com/2020
 - Day 11
   - [Fraser](fraser/day-11)
   - [Tom](tom/day-11)
-
 - Day 12
   - [Tom](tom/day-12)
+  - [Fraser](fraser/day-12)
 
 ![alt text](https://cultofthepartyparrot.com/parrots/hd/christmasparrot.gif)
