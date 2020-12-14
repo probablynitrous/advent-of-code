@@ -1,0 +1,75 @@
+use math::round;
+use std::{
+    fs::File,
+    io::{prelude::*, BufReader},
+    path::Path,
+    time::Instant,
+};
+
+fn get_lines_from_file(filename: impl AsRef<Path>) -> Vec<String> {
+    let file = File::open(filename).expect("Could not find file.");
+    let buf = BufReader::new(file);
+
+    buf.lines()
+        .map(|l| l.expect("Could not parse line."))
+        .collect()
+}
+
+struct Route {
+    value: i64,
+    position: i64,
+}
+
+fn main() {
+    let lines = get_lines_from_file("../test-input.txt");
+    let now = Instant::now();
+
+    let bus_routes: Vec<&str> = lines
+        .get(1)
+        .expect("Valid index")
+        .split(",")
+        .collect::<Vec<&str>>();
+
+    let mut parsed_routes: Vec<Route> = vec![];
+
+    for (index, br) in bus_routes.iter().enumerate() {
+        if br.to_owned() != "x" {
+            parsed_routes.push(Route {
+                value: br.parse().expect("Valid integer"),
+                position: index as i64,
+            });
+        }
+    }
+
+    let prod: i64 = parsed_routes.iter().fold(1, |acc, pr| acc * &pr.value);
+
+    let mut sum: i64 = 1;
+    for pr in parsed_routes {
+        let n = prod / pr.value;
+        let mi = mod_inverse(n, pr.value);
+        sum *= mod_inverse(n, pr.value);
+    }
+
+    let solution = Some((sum % prod) as i64).expect("Failed");
+
+    println!("solution: {}", solution);
+    println!(
+        "Ran in {}ms ({} mic)",
+        now.elapsed().as_millis(),
+        now.elapsed().as_micros()
+    );
+}
+
+fn mod_inverse(x: i64, m: i64) -> i64 {
+    (gcd_extended(0, 1, m, x) + m) % m
+}
+
+fn gcd_extended(t: i64, t_next: i64, r: i64, r_next: i64) -> i64 {
+    match r_next {
+        0 => t,
+        _ => {
+            let q = r / r_next;
+            gcd_extended(t_next, t - q * t_next, r_next, r - q * r_next)
+        }
+    }
+}

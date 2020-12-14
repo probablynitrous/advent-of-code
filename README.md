@@ -52,5 +52,6 @@ Code for https://adventofcode.com/2020
   - [Fraser](fraser/day-12)
 - Day 13
   - [Fraser](fraser/day-13)
+  - [Scott](scott/day-13)
 
 ![alt text](https://cultofthepartyparrot.com/parrots/hd/christmasparrot.gif)
