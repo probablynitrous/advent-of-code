@@ -50,6 +50,7 @@ Code for https://adventofcode.com/2020
 - Day 12
   - [Tom](tom/day-12)
   - [Fraser](fraser/day-12)
+  - [Scott](scott/day-12)
 - Day 13
   - [Fraser](fraser/day-13)
   - [Scott](scott/day-13)
