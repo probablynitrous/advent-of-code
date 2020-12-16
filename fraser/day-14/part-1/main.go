@@ -16,15 +16,20 @@ type instruction struct {
 
 // 14087492730470
 //Too high
+// 8568007943024
+// Wrong
+
+const maskLength = 36
 
 func main() {
 	// Assume we can always open the file
-	file, _ := os.Open(os.Args[1])
+	file, err := os.Open(os.Args[1])
+	if err != nil {
+		log.Fatalf("Failed to open file")
+	}
 	scanner := bufio.NewScanner(file)
 
-	lineIndex := 0
-
-	var mask []string
+	var mask string
 
 	memory := make(map[string]int)
 
@@ -37,14 +42,7 @@ func main() {
 		// Line is a mask
 		if maskRegex.MatchString(line) {
 			// Start with blank mask
-			mask = []string{}
-			maskString := maskRegex.FindStringSubmatch(line)[1]
-
-			for _, rune := range []rune(maskString) {
-				mask = append(mask, string(rune))
-			}
-
-			lineIndex++
+			mask = maskRegex.FindStringSubmatch(line)[1]
 			continue
 		}
 
@@ -54,22 +52,33 @@ func main() {
 
 		instruction := instruction{address: matches[1], value: value}
 
-		bits := []rune(fmt.Sprintf("%0*b", len(mask), instruction.value))
+		bits := []rune(fmt.Sprintf("%0*b", maskLength, instruction.value))
 
-		for bitIndex, maskBit := range mask {
-			switch maskBit {
+		log.Printf("In %v %v", string(bits), instruction.value)
+		log.Printf("Mk %v", mask)
+
+		for bitIndex, bitRune := range []rune(mask) {
+			bitString := string(bitRune)
+			switch bitString {
 			case "X":
 				{
 					continue
 				}
 			default:
 				{
-					bits[bitIndex] = []rune(maskBit)[0]
+					bits[bitIndex] = bitRune
 				}
 			}
 		}
 
-		maskedInt, _ := strconv.ParseInt(string(bits), 2, len(bits))
+		maskedInt, err := strconv.ParseUint(string(bits), 2, maskLength)
+
+		if err != nil {
+			log.Fatalf("Failed to parse %v", string(bits))
+		}
+
+		log.Printf("Ou %v %v", string(bits), maskedInt)
+
 		memory[instruction.address] = int(maskedInt)
 	}
 
