@@ -26,15 +26,12 @@ func main() {
 
 	var mask []string
 
-	instructions := []instruction{}
-
 	memory := make(map[string]int)
 
 	maskRegex := regexp.MustCompile("mask = ([X0-9]+)")
 
 	// For each line
 	for scanner.Scan() {
-		defer func() { file.Close() }()
 		line := scanner.Text()
 
 		// Line is a mask
@@ -53,17 +50,10 @@ func main() {
 
 		matches := regexp.MustCompile("mem\\[([0-9]+)\\] = ([0-9]+)").FindStringSubmatch(line)
 
-		if len(matches) < 1 {
-			log.Fatalf("Failed to build instruction from %v", line)
-		}
-
 		value, _ := strconv.Atoi(matches[2])
-		instruction := instruction{address: matches[1], value: value}
-		instructions = append(instructions, instruction)
-	}
 
-	// Process instructions
-	for _, instruction := range instructions {
+		instruction := instruction{address: matches[1], value: value}
+
 		bits := []rune(fmt.Sprintf("%0*b", len(mask), instruction.value))
 
 		for bitIndex, maskBit := range mask {
@@ -82,6 +72,8 @@ func main() {
 		maskedInt, _ := strconv.ParseInt(string(bits), 2, len(bits))
 		memory[instruction.address] = int(maskedInt)
 	}
+
+	file.Close()
 
 	result := 0
 
