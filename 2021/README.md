@@ -7,3 +7,4 @@ https://adventofcode.com/2021
 - Day 1
   - [Fraser](fraser/day-1)
   - [Tom](tomp/day-1)
+  - [Scott](scott/day-1)
