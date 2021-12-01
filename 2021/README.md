@@ -5,6 +5,4 @@ https://adventofcode.com/2021
 ## Code
 
 - Day 1
-	- [Fraser]()
-	- [Scott]()
-	- [Tom]()
+  - [Fraser](fraser/day-1)
