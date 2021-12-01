@@ -7,20 +7,18 @@ import (
 	"strconv"
 )
 
-type inputLines []int
-
 func main(){
 	data, _ := os.Open("input.txt")
 	scanner := bufio.NewScanner(data)
 
-	var inputLines inputLines
+	var dataLines []int
 	for scanner.Scan() {
 		line,_ := strconv.Atoi(scanner.Text())
-		inputLines = append(inputLines, line)
+		dataLines = append(dataLines, line)
 	}
 
-	step1(inputLines)
-	step2(inputLines)
+	step1(dataLines)
+	step2(dataLines)
 }
 
 func step1(data []int)  {
@@ -49,6 +47,5 @@ func step2(data []int)  {
 		}
 		previousWindow = currWindow
 	}
-
 	fmt.Println(noIncrease)
 }
