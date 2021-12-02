@@ -11,3 +11,4 @@ https://adventofcode.com/2021
 
 - Day 2
   - [Tom](tomp/day-2)
+  - [Scott](scott/src/days/02)
