@@ -5,6 +5,14 @@ use std::{
     time::Instant,
 };
 
+mod direction;
+mod instruction;
+mod submarine;
+
+use direction::Direction;
+use instruction::Instruction;
+use submarine::Submarine;
+
 fn build_path(filename: &str) -> PathBuf {
     // Since we're reading from the build directory, we need to do some
     // footwork to get to the right directory
@@ -21,15 +29,13 @@ fn build_path(filename: &str) -> PathBuf {
     cwd
 }
 
-fn get_lines_from_file(filename: &str) -> Vec<u64> {
+fn get_lines_from_file(filename: &str) -> Vec<String> {
     let file = File::open(build_path(filename)).expect("Could not find file.");
     let buf = BufReader::new(file);
 
     buf.lines()
         .map(|l| {
             l.expect("Could not read line")
-                .parse()
-                .expect("Valid integer")
         })
         .collect()
 }
@@ -38,18 +44,21 @@ fn main() {
     let lines = get_lines_from_file("input.txt");
     let now = Instant::now();
 
-    let mut previous = lines.get(0).unwrap().to_owned();
-    let mut count: u64 = 0;
+    let mut sub = Submarine::new(0, 0);
 
-    for line in lines {
-        if line > previous {
-            count += 1;
-        }
+    for line in &lines {
+        let split = line.split(" ").collect::<Vec<&str>>(); 
+        let instruction = Instruction::new(  
+            Direction::from_str(split[0]).unwrap(),
+            split[1].parse().expect("Valid integer"),
+        );
 
-        previous = line;
+        sub.travel(instruction);
     }
 
-    println!("Solution: {}", count);
+    println!("Distance: {}, Depth: {}", sub.get_distance(), sub.get_depth());
+
+    println!("Solution: {}", sub.get_distance() * sub.get_depth());
     println!(
         "Ran in {}ms, ({}mic)",
         now.elapsed().as_millis(),

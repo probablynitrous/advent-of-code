@@ -32,19 +32,6 @@ fn main() {
     let args = Cli::from_args();
 
     let path = build_path(&args.day, &args.part);
-    println!("           .--._.--.
-          ( O     O )
-          /   . .   \\
-         .`._______.'.
-        /(           )\\
-      _/  \\  \\   /  /  \\_
-   .~   `  \\  \\ /  /  '   ~.
-  {{    -.   \\  V  /   .-    }}
-_ _`.    \\  |  |  |  /    .'_ _
->_       _}} |  |  | {{_       _<
- /. - ~ ,_-'  .^.  `-_, ~ - .\\
-         '-'|/   \\|`-`
-You have been greeted by the frog of destiny");
     println!("Running Day {}, Part {}", &args.day, &args.part);
 
     let mut process = Command::new("sh")

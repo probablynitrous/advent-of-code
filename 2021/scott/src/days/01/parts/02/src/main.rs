@@ -19,7 +19,7 @@ fn get_lines_from_file(filename: impl AsRef<Path>) -> Vec<u16> {
 }
 
 fn main() {
-    let lines = get_lines_from_file("./test.txt");
+    let lines = get_lines_from_file("./input.txt");
     let now = Instant::now();
 
     let mut count: u16 = 0;
