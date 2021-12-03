@@ -11,9 +11,11 @@ https://adventofcode.com/2021
   - [Scott](scott/src/days/01)
 
 - Day 2
+
   - [Tom](tomp/day-2)
   - [Scott](scott/src/days/02)
   - [Fraser](fraser/day-2)
 
 - Day 3
   - [Tom](tomp/day-3)
+  - [Fraser](fraser/day-3)
