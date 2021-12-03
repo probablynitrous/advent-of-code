@@ -51,7 +51,7 @@ func getMostUsed(data []string, defaultValue float64) map[int]float64 {
 		case 1:
 			mostUsed[i] = defaultValue
 		case 0:
-			mostUsed[i] = math.Abs(-1 + defaultValue)
+			mostUsed[i] = 1 - defaultValue
 		}
 	}
 
