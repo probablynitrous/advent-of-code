@@ -16,4 +16,4 @@ https://adventofcode.com/2021
   - [Fraser](fraser/day-2)
 
 - Day 3
-- [Tom](tomp/day-3)
+  - [Tom](tomp/day-3)
