@@ -22,3 +22,6 @@ https://adventofcode.com/2021
 
 - Day 4
   - [Tom](tomp/day-4)
+
+- Day 5
+  - [Tom](tomp/day-5)
