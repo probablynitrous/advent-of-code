@@ -9,7 +9,16 @@ import (
 )
 
 func main(){
-	data, _ := os.Open("input.txt")
+	data := readFile("input.txt")
+	datamap := readArr(data)
+	yPos := datamap["down"] - datamap["up"]
+	xPos := datamap["forward"]
+
+	fmt.Println(int(xPos * yPos))
+}
+
+func readFile(fileName string)[]string {
+	data, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(data)
 
 	var dataLines []string
@@ -17,17 +26,7 @@ func main(){
 		line := scanner.Text()
 		dataLines = append(dataLines, line)
 	}
-
-	step1(dataLines)
-	//step2(dataLines)
-}
-
-func step1(data []string){
-	datamap := readArr(data)
-	yPos := datamap["down"] - datamap["up"]
-	xPos := datamap["forward"]
-
-	fmt.Println(int(xPos * yPos))
+	return dataLines
 }
 
 func readArr(data []string) map[string]float64{

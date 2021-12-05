@@ -9,8 +9,19 @@ import (
 	"strings"
 )
 
+type Ratings struct {
+	oRating  int
+	coRating int
+}
+
 func main() {
-	data, _ := os.Open("input.txt")
+	data := readFile("input.txt")
+	ratings := getRatings(data)
+	fmt.Println(ratings.oRating * ratings.coRating)
+}
+
+func readFile(fileName string) []string {
+	data, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(data)
 
 	var dataLines []string
@@ -18,22 +29,20 @@ func main() {
 		line := scanner.Text()
 		dataLines = append(dataLines, line)
 	}
-
-	step2(dataLines)
+	return dataLines
 }
 
-func step2(data []string) {
+func getRatings(data []string) Ratings {
 	oRating := getRating(data, 1)
 	coRating := getRating(data, 0)
 
 	oRatingInt, _ := strconv.ParseInt(oRating, 2, 64)
 	coRatingInt, _ := strconv.ParseInt(coRating, 2, 64)
 
-	fmt.Println(oRatingInt * coRatingInt)
-
+	return Ratings{oRating: int(oRatingInt), coRating: int(coRatingInt)}
 }
 
-func getMostUsed(data []string, defaultValue float64) map[int]float64 {
+func getBitValue(data []string)map[int]float64{
 	bitValue := make(map[int]float64)
 	for _, line := range data {
 		numbers := strings.Split(line, "")
@@ -42,12 +51,17 @@ func getMostUsed(data []string, defaultValue float64) map[int]float64 {
 			bitValue[i] += value
 		}
 	}
+	return bitValue
+}
 
+func getMostUsed(data []string, defaultValue float64) map[int]float64 {
+	bitValue := getBitValue(data)
+	
 	mostUsed := make(map[int]float64)
 	dataLen := float64(len(data))
 	for i := 0; i < len(bitValue); i++ {
-		frequency := bitValue[i]/dataLen
-		switch math.Round(frequency){
+		frequency := bitValue[i] / dataLen
+		switch math.Round(frequency) {
 		case 1:
 			mostUsed[i] = defaultValue
 		case 0:

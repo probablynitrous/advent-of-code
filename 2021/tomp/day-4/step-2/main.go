@@ -8,8 +8,21 @@ import (
 	"strings"
 )
 
+type Results struct{
+	bingoNumber int
+	unmarked int
+}
+
 func main() {
-	data, _ := os.Open("input.txt")
+	data := readFile("input.txt")
+	numbersDrawn := getNumbersDrawn(data)
+	boards := buildBoards(data)
+	winningValues := playBingoBadly(numbersDrawn, boards)
+	fmt.Println(winningValues.unmarked * winningValues.bingoNumber)
+}
+
+func readFile(fileName string)[]string {
+	data, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(data)
 
 	var dataLines []string
@@ -17,19 +30,7 @@ func main() {
 		line := scanner.Text()
 		dataLines = append(dataLines, line)
 	}
-
-	step1(dataLines)
-}
-
-func step1(data []string) {
-	numbersDrawn := getNumbersDrawn(data)
-	
-	boards := buildBoards(data)
-
-	winningValues := playBingoBadly(numbersDrawn, boards)
-
-
-	fmt.Println(winningValues["unmarked"] * winningValues["bingoNumber"])
+	return dataLines
 }
 
 func getNumbersDrawn(data []string) []string {
@@ -81,7 +82,7 @@ func buildBoards(data []string)map[int][][]string {
 	return boards
 }
 
-func playBingoBadly(numbersDrawn []string, boards map[int][][]string)map[string]int{
+func playBingoBadly(numbersDrawn []string, boards map[int][][]string)Results{
 
 	var occurance = map[int]map[string]map[int]int{}
 	unmarked := make(map[int]int)
@@ -139,10 +140,5 @@ func playBingoBadly(numbersDrawn []string, boards map[int][][]string)map[string]
 
 	lastBoard := boardsWon[len(boardsWon)-1]
 
-	returnValues := make(map[string]int)
-
-	returnValues["bingoNumber"] = bingoNumber
-	returnValues["unmarked"] = unmarked[lastBoard]
-
-	return returnValues
+	return Results{bingoNumber,unmarked[lastBoard]}
 }

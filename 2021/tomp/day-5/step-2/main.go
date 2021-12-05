@@ -28,6 +28,8 @@ func main() {
 	step2(dataLines)
 }
 
+
+
 func step2(data []string) {
 	ventGrid := buildGrid(data)
 

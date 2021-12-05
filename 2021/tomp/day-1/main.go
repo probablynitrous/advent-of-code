@@ -8,7 +8,13 @@ import (
 )
 
 func main(){
-	data, _ := os.Open("input.txt")
+	data := readFile("input.txt")
+	step1(data)
+	step2(data)
+}
+
+func readFile(fileName string)[]int{
+	data, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(data)
 
 	var dataLines []int
@@ -16,9 +22,7 @@ func main(){
 		line,_ := strconv.Atoi(scanner.Text())
 		dataLines = append(dataLines, line)
 	}
-
-	step1(dataLines)
-	step2(dataLines)
+	return dataLines
 }
 
 func step1(data []int)  {
