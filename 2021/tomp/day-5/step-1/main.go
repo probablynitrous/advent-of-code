@@ -15,7 +15,14 @@ type Grid struct {
 }
 
 func main() {
-	data, _ := os.Open("input.txt")
+	data := readFile("input.txt")
+	ventGrid := buildGrid(data)
+	total := calcTotal(ventGrid)
+	fmt.Println(total)
+}
+
+func readFile(fileName string)[]string {
+	data, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(data)
 
 	var dataLines []string
@@ -23,16 +30,7 @@ func main() {
 		line := scanner.Text()
 		dataLines = append(dataLines, line)
 	}
-
-	step1(dataLines)
-}
-
-func step1(data []string) {
-	ventGrid := buildGrid(data)
-
-	total := calcTotal(ventGrid)
-
-	fmt.Println(total)
+	return dataLines
 }
 
 func buildGrid(data []string) map[Grid]int {
@@ -63,47 +61,51 @@ func calcTotal(ventGrid map[Grid]int) int {
 	return total
 }
 
+func getMultiplier(start float64, end float64) int {
+	if start-end > 0 {
+		return -1
+	} else {
+		return 1
+	}
+}
+
 func markLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
-
-	var direction string
-	var diff float64
-	var startInt float64
-	var endInt float64
-	var constCo int
 	if startPos[0] == endPos[0] {
-		direction = "x"
-		constCo, _ = strconv.Atoi(startPos[0])
-		startInt, _ = strconv.ParseFloat(startPos[1], 64)
-		endInt, _ = strconv.ParseFloat(endPos[1], 64)
-
-		diff = math.Abs(startInt - endInt)
+		markVerticalLine(ventGrid, startPos, endPos)
 	} else {
-		direction = "y"
-		constCo, _ = strconv.Atoi(startPos[1])
-		startInt, _ = strconv.ParseFloat(startPos[0], 64)
-		endInt, _ = strconv.ParseFloat(endPos[0], 64)
-
-		diff = math.Abs(startInt - endInt)
+		markHorizontalLine(ventGrid, startPos, endPos)
 	}
 
-	var multiplier int
-	if startInt-endInt > 0 {
-		multiplier = -1
-	} else {
-		multiplier = 1
+	return ventGrid
+}
+
+func markHorizontalLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
+	constCo, _ := strconv.Atoi(startPos[1])
+	From, _ := strconv.ParseFloat(startPos[0], 64)
+	To, _ := strconv.ParseFloat(endPos[0], 64)
+	diff := math.Abs(From - To)
+
+	xmultiplier := getMultiplier(From, To)
+
+	for i := 0; i <= int(diff); i++ {
+		var coords = Grid{x: int(From) + (i * xmultiplier), y: constCo}
+		ventGrid[coords] += 1
 	}
 
-	switch direction {
-	case "y":
-		for i := 0; i <= int(diff); i++ {
-			var coords = Grid{x: int(startInt) + (i * multiplier), y: constCo}
-			ventGrid[coords] += 1
-		}
-	case "x":
-		for i := 0; i <= int(diff); i++ {
-			var coords = Grid{x: constCo, y: int(startInt) + (i * multiplier)}
-			ventGrid[coords] += 1
-		}
+	return ventGrid
+}
+
+func markVerticalLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
+	constCo, _ := strconv.Atoi(startPos[0])
+	From, _ := strconv.ParseFloat(startPos[1], 64)
+	To, _ := strconv.ParseFloat(endPos[1], 64)
+	diff := math.Abs(From - To)
+
+	ymultiplier := getMultiplier(From, To)
+
+	for i := 0; i <= int(diff); i++ {
+		var coords = Grid{x: constCo, y: int(From) + (i * ymultiplier)}
+		ventGrid[coords] += 1
 	}
 
 	return ventGrid

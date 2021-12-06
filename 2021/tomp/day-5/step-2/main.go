@@ -14,9 +14,15 @@ type Grid struct {
 	y int
 }
 
-
 func main() {
-	data, _ := os.Open("input.txt")
+	data := readFile("input.txt")
+	ventGrid := buildGrid(data)
+	total := calcTotal(ventGrid)
+	fmt.Println(total)
+}
+
+func readFile(fileName string) []string {
+	data, _ := os.Open(fileName)
 	scanner := bufio.NewScanner(data)
 
 	var dataLines []string
@@ -24,18 +30,7 @@ func main() {
 		line := scanner.Text()
 		dataLines = append(dataLines, line)
 	}
-
-	step2(dataLines)
-}
-
-
-
-func step2(data []string) {
-	ventGrid := buildGrid(data)
-
-	total := calcTotal(ventGrid)
-
-	fmt.Println(total)
+	return dataLines
 }
 
 func buildGrid(data []string) map[Grid]int {
@@ -71,56 +66,64 @@ func getMultiplier(start float64, end float64) int {
 }
 
 func markLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
-	var direction string
-	var diff float64
-	var xFrom float64
-	var yFrom float64
-	var xTo float64
-	var yTo float64
-	var constCo int
 
 	if startPos[0] == endPos[0] {
-		direction = "y"
-		constCo, _ = strconv.Atoi(startPos[0])
-		yFrom, _ = strconv.ParseFloat(startPos[1], 64)
-		yTo, _ = strconv.ParseFloat(endPos[1], 64)
-		diff = math.Abs(yFrom - yTo)
+		ventGrid = markVerticalLine(ventGrid, startPos, endPos)
 	} else if startPos[1] == endPos[1] {
-		direction = "x"
-		constCo, _ = strconv.Atoi(startPos[1])
-		xFrom, _ = strconv.ParseFloat(startPos[0], 64)
-		xTo, _ = strconv.ParseFloat(endPos[0], 64)
-		diff = math.Abs(xFrom - xTo)
+		ventGrid = markHorizontalLine(ventGrid, startPos, endPos)
 	} else {
-		direction = "d"
-		constCo, _ = strconv.Atoi(startPos[1])
-		xFrom, _ = strconv.ParseFloat(startPos[0], 64)
-		yFrom, _ = strconv.ParseFloat(startPos[1], 64)
-		xTo, _ = strconv.ParseFloat(endPos[0], 64)
-		yTo, _ = strconv.ParseFloat(endPos[1], 64)
-
-		diff = math.Abs(xFrom - xTo)
+		ventGrid = markDiagonalLine(ventGrid, startPos, endPos)
 	}
+
+	return ventGrid
+}
+
+func markHorizontalLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
+	constCo, _ := strconv.Atoi(startPos[1])
+	From, _ := strconv.ParseFloat(startPos[0], 64)
+	To, _ := strconv.ParseFloat(endPos[0], 64)
+	diff := math.Abs(From - To)
+
+	xmultiplier := getMultiplier(From, To)
+
+	for i := 0; i <= int(diff); i++ {
+		var coords = Grid{x: int(From) + (i * xmultiplier), y: constCo}
+		ventGrid[coords] += 1
+	}
+
+	return ventGrid
+}
+
+func markVerticalLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
+	constCo, _ := strconv.Atoi(startPos[0])
+	From, _ := strconv.ParseFloat(startPos[1], 64)
+	To, _ := strconv.ParseFloat(endPos[1], 64)
+	diff := math.Abs(From - To)
+
+	ymultiplier := getMultiplier(From, To)
+
+	for i := 0; i <= int(diff); i++ {
+		var coords = Grid{x: constCo, y: int(From) + (i * ymultiplier)}
+		ventGrid[coords] += 1
+	}
+
+	return ventGrid
+}
+
+func markDiagonalLine(ventGrid map[Grid]int, startPos []string, endPos []string) map[Grid]int {
+	xFrom, _ := strconv.ParseFloat(startPos[0], 64)
+	yFrom, _ := strconv.ParseFloat(startPos[1], 64)
+	xTo, _ := strconv.ParseFloat(endPos[0], 64)
+	yTo, _ := strconv.ParseFloat(endPos[1], 64)
+
+	diff := math.Abs(xFrom - xTo)
 
 	xmultiplier := getMultiplier(xFrom, xTo)
 	ymultiplier := getMultiplier(yFrom, yTo)
 
-	switch direction {
-	case "x":
-		for i := 0; i <= int(diff); i++ {
-			var coords = Grid{x: int(xFrom) + (i * xmultiplier), y: constCo}
-			ventGrid[coords] += 1
-		}
-	case "y":
-		for i := 0; i <= int(diff); i++ {
-			var coords = Grid{x: constCo, y: int(yFrom) + (i * ymultiplier)}
-			ventGrid[coords] += 1
-		}
-	case "d":
-		for i := 0; i <= int(diff); i++ {
-			var coords = Grid{x: int(xFrom) + (i * xmultiplier), y: int(yFrom) + (i * ymultiplier)}
-			ventGrid[coords] += 1
-		}
+	for i := 0; i <= int(diff); i++ {
+		var coords = Grid{x: int(xFrom) + (i * xmultiplier), y: int(yFrom) + (i * ymultiplier)}
+		ventGrid[coords] += 1
 	}
 
 	return ventGrid
