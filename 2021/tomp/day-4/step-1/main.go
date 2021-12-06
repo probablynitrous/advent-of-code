@@ -7,7 +7,7 @@ import (
 	"strings"
 	"strconv"
 )
-type Results struct{
+Ttype Results struct{
 	bingoNumber int
 	unmarked int
 }
