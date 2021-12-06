@@ -13,7 +13,7 @@ type Results struct{
 }
 
 func main() {
-	data := readFile("input.txt")
+	data := readFile("test.txt")
 	numbersDrawn := getNumbersDrawn(data)
 	boards := buildBoards(data)
 	winningValues := playBingo(numbersDrawn, boards)
@@ -64,24 +64,19 @@ func buildBoards(data []string)map[int][][]string {
 		if data[i] == "" {
 			boardId += 1
 		} else {
-			board = strings.Fields(data[i])
+			board = strings.Fields(data[i])	
 			boards[boardId] = append(boards[boardId], board)
 		}
 	}
+	fmt.Println(board)
 	return boards
 }
 
 func playBingo(numbersDrawn []string, boards map[int][][]string)Results{
 
-	var occurance = map[int]map[string]map[int]int{}
+	columnsMarked := make([][5]int, len(boards)+1)
+	rowsMarked := make([][5]int, len(boards)+1)
 	unmarked := make(map[int]int)
-
-	//init maps
-	for boardIndex := range boards {
-		occurance[boardIndex] = map[string]map[int]int{}
-		occurance[boardIndex]["rowMarked"] = map[int]int{}
-		occurance[boardIndex]["colMarked"] = map[int]int{}		
-	}
 
 	for boardIndex,board := range boards {
 		var boardTotal int
@@ -98,15 +93,15 @@ func playBingo(numbersDrawn []string, boards map[int][][]string)Results{
 	for _, value := range numbersDrawn {
 		for boardIndex, currBoard := range boards {
 			for rowIndex, boardLine := range currBoard {
-				pos := Find(boardLine, value)
-				if pos < len(boardLine) {
-					occurance[boardIndex]["colMarked"][pos] += 1
-					occurance[boardIndex]["rowMarked"][rowIndex] += 1
+				colIndex := Find(boardLine, value)
+				if colIndex < len(boardLine) {
+					rowsMarked[boardIndex][rowIndex] += 1
+					columnsMarked[boardIndex][colIndex] += 1
 
 					valueInt,_ := strconv.Atoi(value)
 					unmarked[boardIndex] -= valueInt
 
-					if occurance[boardIndex]["colMarked"][pos] == 5 || occurance[boardIndex]["rowMarked"][rowIndex] == 5  {
+					if rowsMarked[boardIndex][rowIndex] == 5 || columnsMarked[boardIndex][colIndex] == 5  {
 						bingoNumber = valueInt
 						bingoBoard = boardIndex
 						exit = true
