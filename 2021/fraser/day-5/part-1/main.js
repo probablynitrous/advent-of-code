@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 try {
-  const data = fs.readFileSync('test.txt', 'utf8');
+  const data = fs.readFileSync('input.txt', 'utf8');
   const lines = data.split('\n');
   // Remove emtpty line
   lines.pop();
@@ -12,26 +12,23 @@ try {
     .map((line) => line.match(re).groups)
     .filter((vent) => vent.startX === vent.endX || vent.startY === vent.endY)
     .map((vent) => {
-      if (vent.endX < vent.startX) {
+      Object.keys(vent).forEach((key) => {
+        vent[key] = parseInt(vent[key]);
+      });
+      return vent;
+    })
+    .map((vent) => {
+      if (vent.endX < vent.startX || vent.endY < vent.startY) {
         let temp;
         //Swap
         temp = vent.endX;
         vent.endX = vent.startX;
         vent.startX = temp;
-      }
-      if (vent.endY < vent.startY) {
-        let temp;
-        //Swap
+
         temp = vent.endY;
         vent.endY = vent.startY;
         vent.startY = temp;
       }
-      return vent;
-    })
-    .map((vent) => {
-      Object.keys(vent).forEach((key) => {
-        vent[key] = parseInt(vent[key]);
-      });
       return vent;
     });
 
@@ -47,7 +44,7 @@ try {
     }
   });
 
-  console.log(ventSpots);
+  // console.log(ventSpots);
 
   let result = 0;
   Object.keys(ventSpots).forEach((y) => {
