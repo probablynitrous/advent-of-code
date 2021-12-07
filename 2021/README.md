@@ -17,16 +17,19 @@ https://adventofcode.com/2021
   - [Fraser](fraser/day-2)
 
 - Day 3
+
   - [Tom](tomp/day-3)
   - [Fraser](fraser/day-3)
 
 - Day 4
   - [Tom](tomp/day-4)
-
+  - [Fraser](fraser/day-4)
 - Day 5
+
   - [Tom](tomp/day-5)
 
 - Day 6
+
   - [Tom](tomp/day-6)
 
 - Day 7
