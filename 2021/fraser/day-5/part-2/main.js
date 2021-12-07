@@ -10,28 +10,12 @@ try {
     /^(?<startX>[0-9]+),(?<startY>[0-9]+) -> (?<endX>[0-9]+),(?<endY>[0-9]+)/;
   let vents = lines
     .map((line) => line.match(re).groups)
-    // .filter((vent) => vent.startX === vent.endX || vent.startY === vent.endY)
     .map((vent) => {
       Object.keys(vent).forEach((key) => {
         vent[key] = parseInt(vent[key]);
       });
       return vent;
     })
-    // .map((vent) => {
-    //   // Make sure all lines have a positive X component
-    //   if (vent.endX < vent.startX) {
-    //     let temp;
-    //     //Swap
-    //     temp = vent.endX;
-    //     vent.endX = vent.startX;
-    //     vent.startX = temp;
-
-    //     temp = vent.endY;
-    //     vent.endY = vent.startY;
-    //     vent.startY = temp;
-    //   }
-    //   return vent;
-    // })
     .map((vent) => {
       // Get gradients
       vent.deltaX = vent.endX - vent.startX;
@@ -79,7 +63,6 @@ try {
     });
   });
   console.log('Result is', result);
-  // 5708 too low
 } catch (err) {
   console.error(err);
 }
