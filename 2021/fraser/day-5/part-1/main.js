@@ -7,7 +7,7 @@ try {
   lines.pop();
 
   const re =
-    /^(?<startX>[0-9]+),(?<startY>[0-9]+) -> (?<endX>[0-9]+),(?<endY>[0-9]+)$/;
+    /^(?<startX>[0-9]+),(?<startY>[0-9]+) -> (?<endX>[0-9]+),(?<endY>[0-9]+)/;
   let vents = lines
     .map((line) => line.match(re).groups)
     .filter((vent) => vent.startX === vent.endX || vent.startY === vent.endY)
