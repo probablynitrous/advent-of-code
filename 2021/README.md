@@ -42,6 +42,10 @@ https://adventofcode.com/2021
 - Day 8
 
   - [Tom](tomp/day-8)
+
+- Day 9
+
+  - [Tom](tomp/day-9)
 ---
 
 ## The Frog of Destiny
