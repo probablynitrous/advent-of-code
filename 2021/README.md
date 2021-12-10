@@ -40,7 +40,17 @@ https://adventofcode.com/2021
   - [Fraser](fraser/day-7)
 
 - Day 8
+
+  - [Tom](tomp/day-8)
   - [Fraser](fraser/day-8)
+
+- Day 9
+
+  - [Tom](tomp/day-9)
+
+- Day 10
+
+  -[Tom](tomp/day-10)
 
 ---
 
