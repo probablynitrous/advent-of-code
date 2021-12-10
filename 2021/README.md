@@ -39,6 +39,9 @@ https://adventofcode.com/2021
   - [Tom](tomp/day-7)
   - [Fraser](fraser/day-7)
 
+- Day 8
+  - [Fraser](fraser/day-8)
+
 ---
 
 ## The Frog of Destiny
