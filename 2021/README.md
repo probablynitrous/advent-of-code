@@ -52,6 +52,9 @@ https://adventofcode.com/2021
 
   -[Tom](tomp/day-10)
 
+- Day 11
+
+  -[Tom](tomp/day-11)
 ---
 
 ## The Frog of Destiny
