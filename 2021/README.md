@@ -64,6 +64,10 @@ https://adventofcode.com/2021
 
   -[Tom](tomp/day-13)
   -[Scott](scott/src/days/13)
+
+- Day 14
+
+  -[Tom](tomp/day-14)
 ---
 
 ## The Frog of Destiny
