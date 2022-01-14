@@ -2,7 +2,7 @@
 pub enum Direction {
     Forward,
     Up,
-    Down
+    Down,
 }
 
 impl Direction {
@@ -11,7 +11,7 @@ impl Direction {
             "forward" => Some(Self::Forward),
             "down" => Some(Self::Down),
             "up" => Some(Self::Up),
-            _ => None
+            _ => None,
         }
     }
 }

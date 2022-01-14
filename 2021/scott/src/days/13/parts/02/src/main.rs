@@ -26,9 +26,7 @@ fn get_lines_from_file(filename: &str) -> Vec<String> {
     let buf = BufReader::new(file);
 
     buf.lines()
-        .map(|l| {
-            l.expect("Could not read line")
-        })
+        .map(|l| l.expect("Could not read line"))
         .collect()
 }
 
@@ -44,27 +42,30 @@ struct Dot {
     y: i64,
 }
 
- trait Dedup<T: PartialEq + Clone> {
-  fn clear_duplicates(&mut self);
+trait Dedup<T: PartialEq + Clone> {
+    fn clear_duplicates(&mut self);
 }
 
 impl<T: PartialEq + Clone> Dedup<T> for Vec<T> {
-  fn clear_duplicates(&mut self) {
-      let mut already_seen = Vec::new();
-      self.retain(|item| match already_seen.contains(item) {
-          true => false,
-          _ => {
-              already_seen.push(item.clone());
-              true
-          }
-      })
-  }
+    fn clear_duplicates(&mut self) {
+        let mut already_seen = Vec::new();
+        self.retain(|item| match already_seen.contains(item) {
+            true => false,
+            _ => {
+                already_seen.push(item.clone());
+                true
+            }
+        })
+    }
 }
 
 impl Dot {
     // Returns an new copy of itself with the folded value
     pub fn fold(&self, fold: &Fold) -> Dot {
-        let mut new_dot = Dot { x: self.x, y: self.y };
+        let mut new_dot = Dot {
+            x: self.x,
+            y: self.y,
+        };
         if fold.x != -1 {
             // We only need to update the Dot if it'sbelow the fold
             if self.x > fold.x {
@@ -93,22 +94,43 @@ fn get_dots_and_folds(lines: Vec<String>) -> (Vec<Dot>, Vec<Fold>) {
         }
 
         if has_dots {
-            let dot_coords = line.split(',').map(|c| c.parse::<i64>().unwrap()).collect::<Vec<i64>>();
+            let dot_coords = line
+                .split(',')
+                .map(|c| c.parse::<i64>().unwrap())
+                .collect::<Vec<i64>>();
             dots.push(Dot {
                 x: dot_coords[0],
-                y: dot_coords[1]
+                y: dot_coords[1],
             });
             continue;
         }
         let instruction = line.split(' ').collect::<Vec<&str>>();
-        let fold_with_instructions = instruction.last().unwrap().split('=').collect::<Vec<&str>>();
-        
+        let fold_with_instructions = instruction
+            .last()
+            .unwrap()
+            .split('=')
+            .collect::<Vec<&str>>();
+
         if fold_with_instructions.first().unwrap() == &"y" {
-            folds.push(Fold { y:fold_with_instructions.last().unwrap().parse::<i64>().unwrap(), x: -1 });
+            folds.push(Fold {
+                y: fold_with_instructions
+                    .last()
+                    .unwrap()
+                    .parse::<i64>()
+                    .unwrap(),
+                x: -1,
+            });
         }
 
         if fold_with_instructions.first().unwrap() == &"x" {
-            folds.push(Fold { x: fold_with_instructions.last().unwrap().parse::<i64>().unwrap(), y:  -1});
+            folds.push(Fold {
+                x: fold_with_instructions
+                    .last()
+                    .unwrap()
+                    .parse::<i64>()
+                    .unwrap(),
+                y: -1,
+            });
         }
     }
 
@@ -154,18 +176,21 @@ fn render_dots(dots: &[Dot]) {
     for y_index in 0..highest_y + 1 {
         let mut writable_line: Vec<&str> = vec![];
         for x_index in 0..highest_x + 1 {
-            let writable_value = &dots.to_vec().iter().find(|d| d.x == x_index && d.y == y_index).cloned();
+            let writable_value = &dots
+                .to_vec()
+                .iter()
+                .find(|d| d.x == x_index && d.y == y_index)
+                .cloned();
             if writable_value.is_none() {
                 writable_line.push(".");
             } else {
                 writable_line.push("#");
             }
-        };
+        }
 
         println!("{:?}", writable_line.join(""));
-    };
+    }
 }
-
 
 fn main() {
     let lines = get_lines_from_file("input.txt");

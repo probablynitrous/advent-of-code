@@ -1,5 +1,5 @@
-use crate::Instruction;
 use crate::Direction;
+use crate::Instruction;
 
 pub struct Submarine {
     x: i64,
@@ -10,7 +10,7 @@ impl Submarine {
     pub fn new(start_x: i64, start_y: i64) -> Submarine {
         Submarine {
             x: start_x,
-            y: start_y
+            y: start_y,
         }
     }
 
@@ -25,7 +25,7 @@ impl Submarine {
     pub fn get_distance(&self) -> i64 {
         self.x
     }
-    
+
     pub fn get_depth(&self) -> i64 {
         self.y
     }

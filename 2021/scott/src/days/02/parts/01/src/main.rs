@@ -34,9 +34,7 @@ fn get_lines_from_file(filename: &str) -> Vec<String> {
     let buf = BufReader::new(file);
 
     buf.lines()
-        .map(|l| {
-            l.expect("Could not read line")
-        })
+        .map(|l| l.expect("Could not read line"))
         .collect()
 }
 
@@ -47,8 +45,8 @@ fn main() {
     let mut sub = Submarine::new(0, 0);
 
     for line in &lines {
-        let split = line.split(" ").collect::<Vec<&str>>(); 
-        let instruction = Instruction::new(  
+        let split = line.split(' ').collect::<Vec<&str>>();
+        let instruction = Instruction::new(
             Direction::from_str(split[0]).unwrap(),
             split[1].parse().expect("Valid integer"),
         );
@@ -56,7 +54,11 @@ fn main() {
         sub.travel(instruction);
     }
 
-    println!("Distance: {}, Depth: {}", sub.get_distance(), sub.get_depth());
+    println!(
+        "Distance: {}, Depth: {}",
+        sub.get_distance(),
+        sub.get_depth()
+    );
 
     println!("Solution: {}", sub.get_distance() * sub.get_depth());
     println!(

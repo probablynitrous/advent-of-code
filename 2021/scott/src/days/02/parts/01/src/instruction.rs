@@ -10,7 +10,7 @@ impl Instruction {
     pub fn new(direction: Direction, distance: i64) -> Instruction {
         Instruction {
             direction,
-            distance
+            distance,
         }
     }
     pub fn get_direction(&self) -> Direction {
