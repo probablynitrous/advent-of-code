@@ -1,32 +1,11 @@
-use std::{
-    fs::File,
-    io::{prelude::*, BufReader},
-};
-
-fn get_lines_from_file(filename: &str) -> Vec<String> {
-    let file = File::open(filename).expect("Could not find file.");
-    let buf = BufReader::new(file);
-
-    buf.lines().map(|line| line.unwrap()).collect()
-}
+use std::fs;
 
 fn main() {
-    let lines = get_lines_from_file("input.txt");
+    let max = fs::read_to_string("input.txt")
+        .expect("Failed to read input")
+        .split("\n\n")
+        .map(|line| line.split("\n").flat_map(str::parse::<i64>).sum::<i64>())
+        .max();
 
-    let mut largest = -1;
-    let mut current = 0;
-
-    lines.iter().for_each(|line| {
-        if line.len() == 0 {
-            if largest < current {
-                largest = current;
-            }
-
-            current = 0;
-            return;
-        }
-
-        current += line.parse::<i64>().expect("Expected to parse integer");
-    });
-    println!("largest: {:?}", largest);
+    println!("solution: {:?}", max.expect("Solution couldn't be found"));
 }
