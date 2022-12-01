@@ -10,61 +10,61 @@ function main() {
 
 function readFile() {
   const contents = readFileSync('input.txt', 'utf-8');
-  const data = contents.split('\r\n')
-  return data
+  const data = contents.split('\r\n');
+  return data;
 }
 
 function step1(data)  {
-	let topCalories = 0
-	let currentCalories = 0
+	let topCalories = 0;
+	let currentCalories = 0;
 	data.forEach(function(line) {
 		if (line === "") {
 			if (topCalories < currentCalories) {
-				topCalories = currentCalories
+				topCalories = currentCalories;
 			}
-			currentCalories = 0
+			currentCalories = 0;
 		} else {
-			let calories = parseInt(line)
-			currentCalories += calories	
+			let calories = parseInt(line);
+			currentCalories += calories	;
 		}
 	
 	})
 	
 	if (topCalories < currentCalories) {
-		topCalories = currentCalories
+		topCalories = currentCalories;
 	}
-	return topCalories
+	return topCalories;
 }
 
 function step2(data)  {
-	let topCalories = [0,0,0]
-	let currentCalories = 0
+	let topCalories = [0,0,0];
+	let currentCalories = 0;
 	data.forEach(function(line) {
 		if (line === "") {
-			topCalories = updateTopCalories(topCalories,currentCalories)
-			currentCalories = 0
+			topCalories = updateTopCalories(topCalories,currentCalories);
+			currentCalories = 0;
 		} else {
-			let calories = parseInt(line)
-			currentCalories += calories	
+			let calories = parseInt(line);
+			currentCalories += calories	;
 		}
 	}) 
 	
-	topCalories = updateTopCalories(topCalories,currentCalories)
+	topCalories = updateTopCalories(topCalories,currentCalories);
 
-	var total = 0
+	var total = 0;
 	topCalories.forEach(function(calories) {
-		total += calories
+		total += calories;
 	})
-	return total
+	return total;
 }
 
 function updateTopCalories(topCalories, currentCalories){
-  topCalories.sort(function(a, b){return a - b})
+  topCalories.sort(function(a, b){return a - b});
 	if (currentCalories > topCalories[0]) {
 		topCalories.shift();
 		topCalories.push(currentCalories);
 	}
-	return topCalories
+	return topCalories;
 }
 
-main()
+main();
