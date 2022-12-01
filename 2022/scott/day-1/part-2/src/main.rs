@@ -28,7 +28,7 @@ fn main() {
         }
 
         // If we find a value then just add that to the current value
-        if line.len() != 0 && index != lines.len() {
+        if line.len() != 0 {
             current += line.parse::<usize>().expect("Expected to parse integer");
             continue;
         }
@@ -44,14 +44,15 @@ fn main() {
         insert_if_required(&mut largest, current);
 
         current = 0;
-        continue;
     }
-    println!("sum: {:?}", largest);
     println!("sum: {:?}", largest.into_iter().sum::<usize>());
 }
 
 fn insert_if_required(collection: &mut Vec<usize>, needle: usize) -> Vec<usize> {
-    // Get the index of the value that is less than the currnet
+    // Sort so that the first value we hit is the lowest
+    collection.sort();
+
+    // Get the index of the value that is less than the current
     let idx = collection
         .to_owned()
         .into_iter()
