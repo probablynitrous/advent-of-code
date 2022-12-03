@@ -18,7 +18,7 @@ type Game struct {
 //Scissors wins when 3-2 = 1
 
 //3
-//Draw = 0
+//Draw = 0TY
 
 //0
 //Rock loses when 1-2 = -1
