@@ -44,7 +44,6 @@ fn step1(data: &Vec<String>) -> i64 {
 			let calories: i64 = line.parse().unwrap();
 			current_calories += calories	;
 		}
-	
 	} 
 	
 	if top_calories < current_calories {
@@ -76,9 +75,9 @@ fn step2(data: &Vec<String>) -> i64 {
 }
 
 fn update_top_calories(mut top_calories: Vec<i64>,current_calories: i64) -> Vec<i64>{
-    top_calories.sort_by(|a, b| b.cmp(a));
-    if current_calories > top_calories[2] {
-        top_calories.pop();
+    top_calories.sort();
+    if current_calories > top_calories[0] {
+        top_calories.remove(0);
         top_calories.push(current_calories)
     }
     return top_calories;

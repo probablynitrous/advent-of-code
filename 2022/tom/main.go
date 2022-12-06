@@ -25,9 +25,9 @@ func main() {
 	switch lang {
 		case "rust":
 			if test {
-				cmd = exec.Command("cargo", "run", "--", "test")
+				cmd = exec.Command("cargo", "run", "--release", "--", "test")
 			} else {
-				cmd = exec.Command("cargo", "run")
+				cmd = exec.Command("cargo", "run", "--release")
 			}
 			cmd.Dir = fmt.Sprintf("day-%s/rust/", day)
 		case "go":
