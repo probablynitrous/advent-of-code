@@ -28,20 +28,23 @@ type Game struct {
 
 
 func main() {
-	testArg := flag.Bool("test", false, "")
-	flag.Parse()
-	var test bool = bool(*testArg)
-
-	var data []string
-	if test {
-		data = readFile("../test.txt")
-	} else {
-		data = readFile("../input.txt")
-	}
+	data := getInput()
 	step1 := step1(data)
 	fmt.Println("Step 1: ",step1)
 	step2 := step2(data)
 	fmt.Println("Step 2: ",step2)
+}
+
+func getInput() []string {
+	testArg := flag.Bool("test", false, "")
+	flag.Parse()
+	var test bool = bool(*testArg)
+
+	if test {
+		return readFile("../test.txt")
+	} else {
+		return readFile("../input.txt")
+	}
 }
 
 func readFile(fileName string) []string {
