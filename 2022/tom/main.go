@@ -14,8 +14,8 @@ func main() {
 	dayArg := flag.String("day", "", "")
 	testArg := flag.Bool("test", false, "")
 	flag.Parse()
-	fmt.Println("Language: ", string(*langArg))
-	fmt.Println("Day: ", string(*dayArg))
+	fmt.Println("Language:", string(*langArg))
+	fmt.Println("Day:", string(*dayArg))
 	
 	var day string = string(*dayArg)
 	var lang string = string(*langArg)
@@ -44,11 +44,18 @@ func main() {
 				cmd = exec.Command("node","main.js")
 			}
 			cmd.Dir = fmt.Sprintf("day-%s/js/", day)
+		case "py", "python":
+			if test {
+				cmd = exec.Command("py","main.py","test")
+			} else {
+				cmd = exec.Command("py","main.py")
+			}
+			cmd.Dir = fmt.Sprintf("day-%s/python/", day)
 	}
 
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
-	fmt.Println("Running: ", cmd.Args)
+	fmt.Println("Running:", cmd.Args)
 	
 	start := time.Now()
 	out, err := cmd.Output()
