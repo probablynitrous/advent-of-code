@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"regexp"
+	"flag"
 )
 
 type Pair struct {
@@ -14,11 +15,21 @@ type Pair struct {
 }
 
 func main() {
-	data := readFile("input.txt")
+	testArg := flag.Bool("test", false, "")
+	flag.Parse()
+	var test bool = bool(*testArg)
+
+	var data []string
+	if test {
+		data = readFile("../test.txt")
+	} else {
+		data = readFile("../input.txt")
+	}
+	
 	step1 := step1(data)
-	fmt.Println(step1)
+	fmt.Println("Step 1: ",step1)
 	step2 := step2(data)
-	fmt.Println(step2)
+	fmt.Println("Step 2: ",step2)
 }
 
 func readFile(fileName string) []string {

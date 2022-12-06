@@ -1,15 +1,20 @@
 const {readFileSync} = require('fs');
 
 function main() {
-  const data = readFile();
+	var data;
+	if (process.argv.slice(2).includes("test")) {
+		data = readFile('../test.txt');
+	} else {
+		data = readFile('../input.txt');
+	}
   const step1Result = step1(data);
-  console.log(step1Result);
+  console.log("Step 1: ", step1Result);
   const step2Result = step2(data);
-  console.log(step2Result);
+  console.log("Step 2: ", step2Result);
 }
 
-function readFile() {
-  const contents = readFileSync('input.txt', 'utf-8');
+function readFile(fileName) {
+  const contents = readFileSync(fileName, 'utf-8');
   const data = contents.split('\r\n');
   return data;
 }

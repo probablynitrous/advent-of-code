@@ -6,15 +6,25 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"flag"
 )
 
 
 func main() {
-	data := readFile("input.txt")
-	step1Calories := step1(data)
-	fmt.Println(step1Calories)
-	step2Calories := step2(data)
-	fmt.Println(step2Calories)
+	testArg := flag.Bool("test", false, "")
+	flag.Parse()
+	var test bool = bool(*testArg)
+
+	var data []string
+	if test {
+		data = readFile("../test.txt")
+	} else {
+		data = readFile("../input.txt")
+	}
+	step1 := step1(data)
+	fmt.Println("Step 1: ",step1)
+	step2 := step2(data)
+	fmt.Println("Step 2: ",step2)
 }
 
 func readFile(fileName string) []string {
