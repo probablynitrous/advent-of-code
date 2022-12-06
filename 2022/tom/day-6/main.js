@@ -21,9 +21,7 @@ function step1(data)
   const line = data[0];
   for (i = 0; i < line.length; i++) {
     const sample = line.slice(i, i+4);
-    try {  
-      match(sample,r);
-    } catch {
+    if (!sample.match(r)) {
       return i+4;
     } 
   }
@@ -37,9 +35,7 @@ function step2(data)
   const line = data[0];
   for (i = 0; i < line.length; i++) {
     const sample = line.slice(i, i+14);
-    try {  
-      match(sample,r);
-    } catch {
+    if (!sample.match(r)) {
       return i+14;
     } 
   }
