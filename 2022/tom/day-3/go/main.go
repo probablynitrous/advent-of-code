@@ -7,6 +7,8 @@ import (
 	"strings"
 	"unicode"
 	"flag"
+	"time"
+	"log"
 )
 
 
@@ -60,6 +62,7 @@ func step1(data []string) int {
 }
 
 func step2(data []string) int {
+	start := time.Now()
 	var prioritySum int = 0
 	var groups [][3]string
 	var i int = 0
@@ -87,6 +90,8 @@ func step2(data []string) int {
 			}
 		}
 	}
+	
+	fmt.Printf("%s took %v\n", "step2", time.Since(start).Microseconds())
 	return	prioritySum
 }
 
@@ -96,4 +101,9 @@ func getPriority(c rune) int {
 	} else {
 		return  int(c) - 96
 	}
+}
+
+func timeTrack(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
 }
