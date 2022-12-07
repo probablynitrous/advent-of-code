@@ -1,4 +1,3 @@
-import re
 import sys
 
 def main() : 
@@ -15,13 +14,11 @@ def main() :
 
 
 def read_file(file_name):
-  contents = open(file_name, "r")
-  data = contents.read().split('\n')
+  data = open(file_name, "r").readlines()
   return data
 
 def step1(data):
-  result = build_dirs(data)
-  dirs = result[0]
+  dirs, _ = build_dirs(data)
           
   total = 0
   for dir in dirs:
@@ -31,12 +28,9 @@ def step1(data):
   return total
 
 def step2(data):
-  result = build_dirs(data)
-  dirs = result[0]
-  total_size = result[1]
+  dirs, total_size = build_dirs(data)
           
-  unsused_space = 70000000 - total_size
-  space_required = 30000000 - unsused_space
+  space_required = 30000000 - (70000000 - total_size)
   curr_delete_size = total_size
   for dir in dirs:
     if dirs[dir] >= space_required:
@@ -50,25 +44,31 @@ def build_dirs(data):
   curr_path = []
   total_size = 0
   for line in data:
-    m = re.match('\$ cd (?!\.\.)(.+)', line)
-    if m:
-      curr_path.append(m.group(1))
-
-    if line == '$ cd ..':
-      curr_path.pop()
-
-    m = re.match('([0-9]+) (.+)', line)
-    if m:
-      value = int(m.group(1))
-      total_size += value
-      curr_path_string = ''
-      for dir in curr_path:
-        curr_path_string = curr_path_string + '/' + dir
-        if curr_path_string in dirs:
-          dirs[curr_path_string] += value
-        else:
-          dirs[curr_path_string] = value
+    match line.split():
+      case '$', 'cd', '..':
+        curr_path.pop()
+      case '$', 'cd', drive:
+        curr_path.append(drive)
+      case '$',_:
+        pass
+      case 'dir',_:
+        pass
+      case size, _:
+        dirs, total_size = update_path(dirs,curr_path,size,total_size)
+      
   
+  return dirs,total_size
+
+def update_path(dirs, curr_path, size, total_size):
+  value = int(size)
+  total_size += value
+  curr_path_string = ''
+  for dir in curr_path:
+    curr_path_string = curr_path_string + '/' + dir
+    if curr_path_string in dirs:
+      dirs[curr_path_string] += value
+    else:
+      dirs[curr_path_string] = value
   return dirs,total_size
 
 if __name__ == '__main__':
