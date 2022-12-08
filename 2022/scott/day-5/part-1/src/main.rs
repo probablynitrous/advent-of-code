@@ -26,9 +26,9 @@ impl Stack {
         Stack { crates: vec![] }
     }
 
-    // We need to clone here so we can pass ownership back to the caller,
-    // since both `.last()` and the box itself return Options.
     pub fn get_top(&self) -> Option<Box> {
+        // We need to clone here so we can pass ownership back to the caller,
+        // because otherwise the reference won't be alive for long enough
         self.crates.last().unwrap().clone()
     }
 
@@ -181,9 +181,8 @@ fn main() {
 
     let top_boxes = stacks
         .into_iter()
-        .map(|stack| stack.get_top())
-        .filter(|v| v.is_some())
-        .map(|v| v.unwrap().name)
+        // We need to `unwrap()` here since `get_top` returns an `Option<Box>`
+        .map(|stack| stack.get_top().unwrap().name)
         .collect::<Vec<String>>()
         .join("");
 
