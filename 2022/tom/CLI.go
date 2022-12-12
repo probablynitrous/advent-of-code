@@ -44,6 +44,14 @@ func main() {
 				cmd = exec.Command("node","main.js")
 			}
 			cmd.Dir = fmt.Sprintf("day-%s/js/", day)
+			
+		case "ts","typscript":
+			if test {
+				cmd = exec.Command("npx", "ts-node","main.ts","test")
+			} else {
+				cmd = exec.Command("npx", "ts-node","main.ts")
+			}
+			cmd.Dir = fmt.Sprintf("day-%s/ts/", day)
 		case "py", "python":
 			if test {
 				cmd = exec.Command("py","main.py","test")
