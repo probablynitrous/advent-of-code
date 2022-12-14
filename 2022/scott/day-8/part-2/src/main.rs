@@ -8,22 +8,25 @@ fn get_tree_from_coord(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> i64 {
     all_trees[y][x]
 }
 
-fn is_visible_right(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
+fn right_score(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> i64 {
+    let mut score = 0;
     let test_tree = get_tree_from_coord(x, y, all_trees);
     let mut working_x = x + 1;
-    let mut is_visible: bool = true;
+    let mut is_visible = true;
     while working_x <= all_trees[y].len() - 1 && is_visible {
         if get_tree_from_coord(working_x, y, all_trees) >= test_tree {
             is_visible = false;
         }
 
+        score += 1;
         working_x += 1;
     }
 
-    is_visible
+    score
 }
 
-fn is_visible_above(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
+fn top_score(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> i64 {
+    let mut score = 0;
     let test_tree = get_tree_from_coord(x, y, all_trees);
     let mut working_y: i64 = y as i64 - 1;
     let mut is_visible: bool = true;
@@ -33,14 +36,15 @@ fn is_visible_above(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
         }
 
         working_y -= 1;
+        score += 1;
     }
 
-    is_visible
+    score
 }
 
-fn is_visible_left(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
+fn left_score(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> i64 {
+    let mut score = 0;
     let test_tree = get_tree_from_coord(x, y, all_trees);
-    println!("test tree: {:?}", test_tree);
     let mut working_x: i64 = x as i64 - 1;
     let mut is_visible: bool = true;
     while working_x >= 0 && is_visible {
@@ -49,12 +53,14 @@ fn is_visible_left(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
         }
 
         working_x -= 1;
+        score += 1;
     }
 
-    is_visible
+    score
 }
 
-fn is_visible_bottom(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
+fn bottom_score(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> i64 {
+    let mut score = 0;
     let test_tree = get_tree_from_coord(x, y, all_trees);
     let mut working_y: i64 = y as i64 + 1;
     let mut is_visible: bool = true;
@@ -64,9 +70,10 @@ fn is_visible_bottom(x: usize, y: usize, all_trees: &Vec<Vec<i64>>) -> bool {
         }
 
         working_y += 1;
+        score += 1;
     }
 
-    is_visible
+    score
 }
 
 fn main() {
@@ -82,49 +89,26 @@ fn main() {
         })
         .collect::<Vec<Vec<i64>>>();
 
-    let visible_trees = all_trees
+    let highest_score = all_trees
         .clone()
         .into_iter()
         .enumerate()
         .map(|(idx, line)| {
-            // If we're on the first or last line then all trees are visible
-            if idx == 0 || idx == all_trees.len() - 1 {
-                return line.len() as i64;
-            }
-
             return line
                 .clone()
                 .into_iter()
                 .enumerate()
                 .map(|(tree_idx, _)| {
-                    if tree_idx == 0 || tree_idx == line.len() - 1 {
-                        return 1;
-                    }
+                    let score = top_score(tree_idx, idx, &all_trees)
+                        * right_score(tree_idx, idx, &all_trees)
+                        * left_score(tree_idx, idx, &all_trees)
+                        * bottom_score(tree_idx, idx, &all_trees);
 
-                    println!("coords: {:?} {:?}", tree_idx, idx);
-
-                    if is_visible_left(tree_idx, idx, &all_trees) {
-                        println!("visible from left");
-                        return 1;
-                    }
-                    if is_visible_right(tree_idx, idx, &all_trees) {
-                        println!("Visible from right");
-                        return 1;
-                    }
-                    if is_visible_above(tree_idx, idx, &all_trees) {
-                        println!("Visible from above");
-                        return 1;
-                    }
-                    if is_visible_bottom(tree_idx, idx, &all_trees) {
-                        println!("Visible from bottom");
-                        return 1;
-                    }
-
-                    return 0;
+                    return score;
                 })
-                .sum::<i64>();
+                .max();
         })
-        .sum::<i64>();
+        .max();
 
-    println!("Visible Trees: {:?}", visible_trees);
+    println!("Highest score: {:?}", highest_score);
 }
