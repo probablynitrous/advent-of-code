@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs};
+use std::{collections::HashMap, fs, time::Instant};
 
 fn get_file_as_string(file_name: &str) -> String {
     return fs::read_to_string(file_name).expect("Failed to read input");
@@ -34,7 +34,7 @@ struct Monkey {
     pub items: Vec<i64>,
     // In the form of [old, operator, modifier]
     pub operation: Vec<String>,
-    pub test: i64,
+    pub test_value: i64,
     pub if_true: i64,
     pub if_false: i64,
     pub inspect_count: i64,
@@ -51,7 +51,7 @@ impl Monkey {
             .split(" ")
             .map(|part| part.to_string())
             .collect::<Vec<String>>();
-        let test = get_last_num_in_str(parts[3]);
+        let test_value = get_last_num_in_str(parts[3]);
         let if_true = get_last_num_in_str(parts[4]);
         let if_false = get_last_num_in_str(parts[5]);
 
@@ -59,7 +59,7 @@ impl Monkey {
             index,
             items: starting_items,
             operation,
-            test,
+            test_value,
             if_true,
             if_false,
             inspect_count: 0,
@@ -92,6 +92,8 @@ impl Monkey {
 fn main() {
     let file = get_file_as_string("input.txt");
 
+    let now = Instant::now();
+
     let mut monkeys = file
         .split("\n\n")
         .enumerate()
@@ -100,8 +102,15 @@ fn main() {
         })
         .collect::<Vec<Monkey>>();
 
+    let modifier = monkeys
+        .iter()
+        .map(|monkey| monkey.test_value)
+        .reduce(|acc, monkey| {
+            return acc * monkey;
+        });
+
     // Iterate for 20 rounds
-    for _ in 0..20 {
+    for _ in 0..10000 {
         for m in 0..monkeys.len() {
             // Monkeys without items at the point where their turn starts are skipped
             if monkeys[m].items.len() == 0 {
@@ -117,10 +126,9 @@ fn main() {
                 // Operate on the item
                 let operated_item = &monkeys[m].operate(item);
 
-                // Monkey gets bored
-                let with_bored_pad = operated_item / 3;
+                let padded_item = operated_item % modifier.unwrap();
 
-                if with_bored_pad % monkeys[m].test == 0 {
+                if padded_item % monkeys[m].test_value == 0 {
                     let if_true = monkeys[m].if_true;
                     let existing_items = items_to_move.get(&if_true);
 
@@ -130,7 +138,7 @@ fn main() {
                         Vec::new()
                     };
 
-                    to_update.push(with_bored_pad);
+                    to_update.push(padded_item.clone());
                     items_to_move.insert(if_true, to_update);
                 } else {
                     let if_false = monkeys[m].if_false;
@@ -142,7 +150,7 @@ fn main() {
                         Vec::new()
                     };
 
-                    to_update.push(with_bored_pad);
+                    to_update.push(padded_item.clone());
                     items_to_move.insert(if_false, to_update);
                 }
             }
@@ -161,8 +169,12 @@ fn main() {
     monkeys.sort_by(|a, b| a.inspect_count.partial_cmp(&b.inspect_count).unwrap());
     monkeys.reverse();
 
+    let elapsed = now.elapsed();
+
     println!(
         "Total: {:?}",
         monkeys[0].inspect_count * monkeys[1].inspect_count
     );
+
+    println!("took: {:?}", elapsed);
 }
