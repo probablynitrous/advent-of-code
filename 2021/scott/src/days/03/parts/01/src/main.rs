@@ -1,10 +1,4 @@
-use std::{
-    collections::BTreeMap,
-    fs::File,
-    io::{prelude::*, BufReader},
-    path::PathBuf,
-    time::Instant,
-};
+use std::{path::PathBuf, time::Instant};
 
 fn build_path(filename: &str) -> PathBuf {
     // Since we're reading from the build directory, we need to do some
@@ -22,120 +16,54 @@ fn build_path(filename: &str) -> PathBuf {
     cwd
 }
 
-fn get_lines_from_file(filename: &str) -> Vec<String> {
-    let file = File::open(build_path(filename)).expect("Could not find file.");
-    let buf = BufReader::new(file);
-
-    buf.lines()
-        .map(|l| {
-            l.expect("Could not read line")
-        })
-        .collect()
+fn read_file_as_string(filename: &str) -> String {
+    std::fs::read_to_string(filename).expect("Couldn't read file into string")
 }
-
-#[derive(Clone, Debug)]
-enum Bit {
-    Zero,
-    One
-}
-
-impl Bit {
-    pub fn from_char(value: &char) -> Option<Bit> {
-        match value {
-            '0' => Some(Bit::Zero),
-            '1' => Some(Bit::One),
-            _ => None
-        }
-    }
-
-    pub fn to_str(bit: &Bit) -> &str {
-        match bit  {
-            Bit::Zero => "0",
-            Bit::One => "1"
-        }
-    }
-}
-
-#[derive(Clone, Debug)]
-struct BitCount {
-    bit: Bit,
-    count: i64,
-}
-
-#[derive(Debug)]
-struct BitAggregate {
-    zero: BitCount,
-    one: BitCount,
-}
-
-impl BitAggregate {
-    pub fn add_value(&mut self, value: Bit) {
-        match value {
-            Bit::Zero => self.zero.count += 1,
-            Bit::One => self.one.count += 1,
-        }
-    }
-
-    pub fn get_most_common(&self) -> &BitCount {
-        if &self.zero.count > &self.one.count {
-            return &self.zero;
-        }
-
-        return &self.one;
-    }
-
-    pub fn get_least_common(&self) -> &BitCount {
-        if &self.zero.count < &self.one.count {
-            return &self.zero;
-        }
-
-        return &self.one;
-    }
-}
-
 
 fn main() {
-    let lines = get_lines_from_file("input.txt");
+    let file = read_file_as_string("input.txt");
     let now = Instant::now();
 
-    let mut bits: BTreeMap<i64, BitAggregate> = BTreeMap::new();
+    let mut grouping: Vec<Vec<String>> = Vec::new();
 
-    for line in lines {
-        let line_bits = line.chars().collect::<Vec<char>>(); 
-
-        for (idx, value) in line_bits.iter().enumerate() {
-            if bits.get(&(idx as i64)).is_none() {
-                bits.insert(idx.try_into().unwrap(), BitAggregate {
-                    zero: BitCount {
-                        bit: Bit::Zero,
-                        count: 0
-                    },
-                    one: BitCount {
-                        bit: Bit::One,
-                        count: 0
-                    },
-                });
+    file.lines().for_each(|line| {
+        line.chars().enumerate().for_each(|(idx, char)| {
+            let char_str = char.to_string();
+            if grouping.get(idx).is_some() {
+                grouping.get_mut(idx).unwrap().push(char.to_string());
+            } else {
+                grouping.push(vec![char_str]);
             }
+        })
+    });
 
-            bits.get_mut(&(idx as i64))
-                .unwrap()
-                .add_value(
-                    Bit::from_char(value).expect("Invalid binary")
-                );
+    let mut gamma: Vec<String> = Vec::new();
+    let mut epsilon: Vec<String> = Vec::new();
+
+    grouping.iter_mut().for_each(|group| {
+        group.sort();
+
+        let one_position = group
+            .iter()
+            .position(|value| value == "1")
+            .expect("Couldn't find a 1 in the string");
+
+        // if there are more zeroes than ones
+        if one_position > group.len() / 2 {
+            // Then add a zero to the gamma rate
+            gamma.push("0".to_string());
+            // And add a one to the epsilon rate
+            epsilon.push("1".to_string());
+        } else {
+            gamma.push("1".to_string());
+            epsilon.push("0".to_string());
         }
-    }
+    });
 
-    let mut gamma_rate_col: Vec<&str> = vec![];
-    let mut epsilon_rate_col: Vec<&str> = vec![];
-
-    for bit_aggregate in bits.values() {
-        gamma_rate_col.push(Bit::to_str(&bit_aggregate.get_most_common().bit));
-        epsilon_rate_col.push(Bit::to_str(&bit_aggregate.get_least_common().bit));
-    }
-    
-    let gamma_rate = isize::from_str_radix(&gamma_rate_col.join(""), 2).unwrap();
-    let epsilon_rate = isize::from_str_radix(&epsilon_rate_col.join(""), 2).unwrap();
-
+    let gamma_rate = isize::from_str_radix(&gamma.join(""), 2)
+        .expect("Couldn't parse string binary into decimal");
+    let epsilon_rate = isize::from_str_radix(&epsilon.join(""), 2)
+        .expect("Couldn't parse string binary into decimal");
 
     println!("Solution: {}", &gamma_rate * &epsilon_rate);
     println!(
