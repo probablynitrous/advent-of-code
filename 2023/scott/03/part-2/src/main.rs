@@ -3,7 +3,7 @@ use regex::{CaptureMatches, Regex};
 use std::{fs, time::Instant};
 
 fn main() {
-    let file = fs::read_to_string("test-input.txt").expect("Couldn't find file to read");
+    let file = fs::read_to_string("test-input-2.txt").expect("Couldn't find file to read");
 
     let start = Instant::now();
 
@@ -11,7 +11,11 @@ fn main() {
 
     let all_symbols = file
         .lines()
-        .map(|line| line.split("").collect::<Vec<&str>>())
+        .map(|line| {
+            line.split("")
+                .filter(|c| c.len() > 0)
+                .collect::<Vec<&str>>()
+        })
         .collect::<Vec<Vec<&str>>>();
 
     let sum: i32 = lines
@@ -27,11 +31,11 @@ fn main() {
                 let adjacent_numbers =
                     find_surrounding_numbers(x_pos as i32, y_pos as i32, &all_symbols);
 
-                // println!("adjacent_numbers: {:?}", adjacent_numbers);
-
                 if adjacent_numbers.len() != 2 {
                     return;
                 }
+
+                println!("pushing adjacent_numbers: {:?}", adjacent_numbers);
 
                 cog_values.push(adjacent_numbers[0] * adjacent_numbers[1]);
             });
@@ -62,7 +66,7 @@ fn find_surrounding_numbers(x_pos: i32, y_pos: i32, all_symbols: &Vec<Vec<&str>>
                 return;
             }
 
-            if (cap.end() as i32) > x_pos + 4 {
+            if (cap.end() as i32 - 1) > x_pos + 3 {
                 return;
             }
 
@@ -82,7 +86,7 @@ fn find_surrounding_numbers(x_pos: i32, y_pos: i32, all_symbols: &Vec<Vec<&str>>
                 return;
             }
 
-            if cap.end() as i32 > x_pos + 4 {
+            if cap.end() as i32 - 1 > x_pos + 3 {
                 return;
             }
 
@@ -96,61 +100,52 @@ fn find_surrounding_numbers(x_pos: i32, y_pos: i32, all_symbols: &Vec<Vec<&str>>
 
     // Check to the left on the same level
     if x_pos != 0 {
-        // If we can parse, then it's a digit - we should try and capture as
-        // many of these as possible
+        // If the char to the left of the cog is a digit, then we should continue
+        // to try and pass all those
         if all_symbols[y_pos as usize][x_pos as usize - 1]
             .parse::<i32>()
             .is_ok()
         {
-            let mut working_value: String = "".to_string();
+            get_line_captures_iter(&all_symbols[y_pos as usize].join("")).for_each(|capture| {
+                let cap = capture.get(0).expect("Couldn't get first capture");
+                if (
+                    // cap.end() always returns the byte _after_ the match
+                    cap.end() - 1
+                ) as i32
+                    != x_pos - 1
+                {
+                    return;
+                }
 
-            let mut i = x_pos - 1;
-            while all_symbols[y_pos as usize][i as usize]
-                .parse::<i32>()
-                .is_ok()
-            {
-                println!("i: {i}");
-                println!("should be 7: {}", all_symbols[y_pos as usize][i as usize]);
-                // Use insert_str here so that we prepend to the start of the
-                // string to build out the number correctly
-                working_value.insert_str(0, all_symbols[y_pos as usize][i as usize]);
-                i -= 1;
-            }
-
-            println!("working_value: {working_value}");
-
-            adjacent_numbers.push(
-                working_value
-                    .parse::<i32>()
-                    .expect("Couldn't parse captured number to the left"),
-            );
+                adjacent_numbers.push(
+                    cap.as_str()
+                        .parse::<i32>()
+                        .expect("Couldn't parse captured number to the left"),
+                );
+            });
         }
     }
 
     // Check to the right on the same level
-    if x_pos != all_symbols[0].len() as i32 - 1 {
-        // If we can parse, then it's a digit - we should try and capture as
-        // many of these as possible
+    if x_pos != (all_symbols[0].len() as i32 - 1) {
+        // If the char to the right of the cog is a digit, then we should continue
+        // to try and pass all those
         if all_symbols[y_pos as usize][x_pos as usize + 1]
             .parse::<i32>()
             .is_ok()
         {
-            let mut working_value: String = "".to_string();
+            get_line_captures_iter(&all_symbols[y_pos as usize].join("")).for_each(|capture| {
+                let cap = capture.get(0).expect("Couldn't get first capture");
+                if cap.start() as i32 != x_pos + 1 {
+                    return;
+                }
 
-            let mut i = x_pos + 1;
-            while all_symbols[y_pos as usize][i as usize]
-                .parse::<i32>()
-                .is_ok()
-            {
-                working_value.push_str(all_symbols[y_pos as usize][i as usize]);
-                i += 1;
-            }
-
-            adjacent_numbers.push(
-                working_value
-                    .parse::<i32>()
-                    .expect("Couldn't parse captured number to the right"),
-            );
+                adjacent_numbers.push(
+                    cap.as_str()
+                        .parse::<i32>()
+                        .expect("Couldn't parse captured number to the left"),
+                );
+            });
         }
     }
 
