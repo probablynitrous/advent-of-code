@@ -3,7 +3,7 @@ use regex::{CaptureMatches, Regex};
 use std::{fs, time::Instant};
 
 fn main() {
-    let file = fs::read_to_string("test-input-2.txt").expect("Couldn't find file to read");
+    let file = fs::read_to_string("input.txt").expect("Couldn't find file to read");
 
     let start = Instant::now();
 
@@ -35,8 +35,6 @@ fn main() {
                     return;
                 }
 
-                println!("pushing adjacent_numbers: {:?}", adjacent_numbers);
-
                 cog_values.push(adjacent_numbers[0] * adjacent_numbers[1]);
             });
 
@@ -62,11 +60,11 @@ fn find_surrounding_numbers(x_pos: i32, y_pos: i32, all_symbols: &Vec<Vec<&str>>
         // Check all the numbers above the cog
         get_line_captures_iter(&all_symbols[(y_pos as usize) - 1].join("")).for_each(|capture| {
             let cap = capture.get(0).expect("Couldn't get first capture");
-            if (cap.start() as i32) < x_pos - 3 {
+            if (cap.start() as i32) < x_pos - 3 || (cap.start() as i32) > x_pos + 1 {
                 return;
             }
 
-            if (cap.end() as i32 - 1) > x_pos + 3 {
+            if (cap.end() as i32) - 1 < x_pos - 1 || (cap.end() as i32 - 1) > x_pos + 3 {
                 return;
             }
 
@@ -79,14 +77,14 @@ fn find_surrounding_numbers(x_pos: i32, y_pos: i32, all_symbols: &Vec<Vec<&str>>
     }
 
     if y_pos != all_symbols.len() as i32 - 1 as i32 {
-        // Check all the numbers above the cog
+        // Check all the numbers below the cog
         get_line_captures_iter(&all_symbols[y_pos as usize + 1].join("")).for_each(|capture| {
             let cap = capture.get(0).expect("Couldn't get first capture");
-            if (cap.start() as i32) < x_pos - 3 {
+            if (cap.start() as i32) < x_pos - 3 || (cap.start() as i32) > x_pos + 1 {
                 return;
             }
 
-            if cap.end() as i32 - 1 > x_pos + 3 {
+            if (cap.end() as i32) - 1 < x_pos - 1 || (cap.end() as i32 - 1) > x_pos + 3 {
                 return;
             }
 
