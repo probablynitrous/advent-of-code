@@ -49,48 +49,38 @@ fn main() {
         };
     }
 
-    let mut steps = 0;
-    let mut ending_paths_count: i64 = 0;
+    let mut prev_lcm = 1;
 
-    // Continue to step through until we hit Z in all the working_paths
-    while ending_paths_count != working_paths.len() as i64 {
-        steps += 1;
+    working_paths.iter_mut().for_each(|path| {
+        let mut steps = 0;
 
-        let instruction = instruction_set
-            .get((steps - 1) % instruction_set.len())
-            .expect("Couldn't get instruction for step: {step}");
+        while path.start.chars().last().unwrap() != 'Z' {
+            steps += 1;
 
-        working_paths.iter_mut().for_each(|path| {
+            let instruction = instruction_set
+                .get((steps - 1) % instruction_set.len())
+                .expect("Couldn't get instruction for step: {step}");
+
             // Need to get the right destination based on the instruction_set
             match instruction {
                 Instruction::Right => {
                     *path = paths
                         .get(path.right)
                         .expect("Couldn't find path to the right");
-
-                    if path.start.chars().last().unwrap() == 'Z' {
-                        ending_paths_count += 1;
-                    } else if ending_paths_count > 0 {
-                        ending_paths_count -= 1;
-                    }
                 }
                 Instruction::Left => {
                     *path = paths
                         .get(path.left)
                         .expect("Couldn't find a path to the left");
-
-                    if path.start.chars().last().unwrap() == 'Z' {
-                        ending_paths_count += 1;
-                    } else if ending_paths_count > 0 {
-                        ending_paths_count -= 1;
-                    }
                 }
             }
-        });
-    }
+        }
+
+        prev_lcm = lcm(prev_lcm, steps);
+    });
 
     let total_time = Instant::now() - start;
-    println!("steps: {:?}", steps);
+    println!("steps: {:?}", prev_lcm);
     println!("took: {:?}", total_time);
 }
 
@@ -117,4 +107,29 @@ fn get_paths(file: &str) -> HashMap<String, Path> {
     });
 
     return paths;
+}
+
+fn lcm(first: usize, second: usize) -> usize {
+    first * second / gcd(first, second)
+}
+
+fn gcd(first: usize, second: usize) -> usize {
+    let mut max = first;
+    let mut min = second;
+    if min > max {
+        let val = max;
+        max = min;
+
+        min = val;
+    }
+
+    loop {
+        let res = max % min;
+        if res == 0 {
+            return min;
+        }
+
+        max = min;
+        min = res;
+    }
 }
