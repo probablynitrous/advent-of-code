@@ -1,5 +1,5 @@
 use core::panic;
-use regex::{CaptureMatches, Regex};
+use regex::Regex;
 use std::fs;
 
 fn main() {
