@@ -1,6 +1,6 @@
 using AoC.Helpers;
 
-namespace AoC;
+namespace AoC.Solutions;
 
 public class DayOne
 {
@@ -23,7 +23,7 @@ public class DayOne
             if (currPos == 0)
                 zeroCounter++;
         }
-        return "Zeros hit: " + zeroCounter + ", Resets: " + resetCounter;
+        return $"Zeros hit: {zeroCounter}, Resets: {resetCounter}";
     }
     private static int CountResets(int currPos, int change)
     {

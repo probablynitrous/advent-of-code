@@ -1,5 +1,5 @@
-﻿namespace AoC;
-
+﻿using AoC.Solutions;
+namespace AoC;
 class Program
 {
     static async Task Main(string[] args)
@@ -20,6 +20,12 @@ class Program
         {
             case "1":
                 result = await DayOne.Run(isTest);
+                break;
+            case "2":
+                result = await DayTwo.Run(isTest);
+                break;
+            case "3":
+                result = await DayThree.Run(isTest);
                 break;
         }
 
