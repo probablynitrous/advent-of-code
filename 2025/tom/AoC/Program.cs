@@ -27,6 +27,15 @@ class Program
             case "3":
                 result = await DayThree.Run(isTest);
                 break;
+            case "4":
+                result = await DayFour.Run(isTest);
+                break;
+            case "5":
+                result = await DayFive.Run(isTest);
+                break;
+            case "6":
+                result = await DaySix.Run(isTest);
+                break;
         }
 
         Console.WriteLine(result);
